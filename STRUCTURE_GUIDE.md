@@ -110,12 +110,14 @@ InvestIQ/
 ## 📋 Why This Structure?
 
 ### ✅ Current Structure Advantages:
+
 - Everything self-contained in `website/` folder
 - Clear separation of web application
 - Easy to organize multiple project types
 - All related files together
 
 ### ✅ Optimal Structure Advantages:
+
 - Industry standard for GitHub projects
 - Better discoverability (visitors see backend/frontend immediately)
 - Cleaner root-level navigation
@@ -125,6 +127,7 @@ InvestIQ/
 ## 🚀 How to Use Current Structure
 
 ### Running Backend (from project root):
+
 ```bash
 cd website/backend
 python -m venv venv
@@ -135,6 +138,7 @@ python manage.py runserver
 ```
 
 ### Running Frontend (from project root):
+
 ```bash
 cd website/frontend
 npm install
@@ -142,6 +146,7 @@ npm run dev
 ```
 
 ### Using Docker:
+
 ```bash
 cd website
 docker-compose up -d
@@ -155,13 +160,13 @@ docker-compose up -d
 /docs/                     # Copied from website/docs
 /scripts/                  # Utility scripts
 /.github/                  # GitHub workflows and guides
-/                          
+/
 README.md                  # Main project README
 CONTRIBUTING.md            # Contribution guidelines
 LICENSE                    # MIT license
 docker-compose.yml         # Docker configuration
 PROJECT_STRUCTURE.md       # This file
-../                        
+../
 ```
 
 ## 🎓 Project Modules Explained
@@ -204,6 +209,7 @@ PROJECT_STRUCTURE.md       # This file
 ## 📦 Dependencies
 
 ### Backend (Python 3.11)
+
 - Django 4.2+
 - Django REST Framework
 - PostgreSQL driver (psycopg2)
@@ -211,6 +217,7 @@ PROJECT_STRUCTURE.md       # This file
 - Python-dotenv
 
 ### Frontend (Node 18+)
+
 - React 18+
 - Vite 4+
 - React Router
@@ -220,13 +227,13 @@ PROJECT_STRUCTURE.md       # This file
 
 ## ⚙️ Configuration Files
 
-| File | Location | Purpose |
-|------|----------|---------|
-| `.env` | `website/backend/` | Backend secrets |
-| `.env.example` | Root + subdirs | Template for `.env` |
-| `docker-compose.yml` | Root + `website/` | Container orchestration |
-| `settings.py` | `website/backend/investiq_api/` | Django config |
-| `vite.config.js` | `website/frontend/` | Frontend build config |
+| File                 | Location                        | Purpose                 |
+| -------------------- | ------------------------------- | ----------------------- |
+| `.env`               | `website/backend/`              | Backend secrets         |
+| `.env.example`       | Root + subdirs                  | Template for `.env`     |
+| `docker-compose.yml` | Root + `website/`               | Container orchestration |
+| `settings.py`        | `website/backend/investiq_api/` | Django config           |
+| `vite.config.js`     | `website/frontend/`             | Frontend build config   |
 
 ## 🔐 Security Notes
 
