@@ -212,8 +212,8 @@ GRANT ALL PRIVILEGES ON DATABASE investiq_db TO investiq;
 
 ```env
 DATABASE_ENGINE=django.db.backends.postgresql
-DATABASE_NAME=festronix_db
-DATABASE_USER=festronix
+DATABASE_NAME=investiq_db
+DATABASE_USER=investiq
 DATABASE_PASSWORD=password
 DATABASE_HOST=localhost
 DATABASE_PORT=5432

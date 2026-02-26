@@ -4,7 +4,7 @@
 
 ### What's Been Built
 
-**Festronix Backend** - A production-ready Django REST API with the following features:
+**InvestIQ Backend** - A production-ready Django REST API with the following features:
 
 #### 1. Authentication Module ✅
 
@@ -467,7 +467,7 @@ npm run preview    # Preview production build
 
 ## 🎊 Conclusion
 
-The **Festronix Backend** is complete and ready for production deployment or frontend integration. All modules are functional, documented, and ready for the next phase of development.
+The **InvestIQ Backend** is complete and ready for production deployment or frontend integration. All modules are functional, documented, and ready for the next phase of development.
 
 **Status**: ✅ **READY FOR PRODUCTION OR FRONTEND INTEGRATION**
 

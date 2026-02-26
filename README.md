@@ -83,7 +83,7 @@ Frontend will be available at `http://localhost:5173`
 ```
 Festronix/
 ├── backend/
-│   ├── festronix_api/
+│   ├── investiq_api/
 │   │   ├── apps/
 │   │   │   ├── authentication/    # JWT auth, user profiles
 │   │   │   ├── prediction/        # Stock prediction logic
