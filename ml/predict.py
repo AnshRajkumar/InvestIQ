@@ -3,20 +3,17 @@ import joblib
 from utils import fetch_stock_data
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# ✅ Correct path (NO "models" folder)
 model_path = os.path.join(BASE_DIR, "saved_models", "stock_model.pkl")
-
-print("Loading model from:", model_path)
 
 model = joblib.load(model_path)
 
 
 def predict_stock(ticker):
     df = fetch_stock_data(ticker)
+
+    features = ["SMA_50", "SMA_200", "RSI", "MACD"]
     latest = df.iloc[-1]
 
-    features = ['SMA_50', 'SMA_200', 'RSI', 'MACD']
     X = latest[features].values.reshape(1, -1)
 
     prediction = model.predict(X)[0]
