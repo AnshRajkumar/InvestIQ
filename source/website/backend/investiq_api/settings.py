@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'investiq_api.apps.news',
     'investiq_api.apps.portfolio',
     'investiq_api.apps.advisor',
+    'investiq_api.apps.playground',
 ]
 
 MIDDLEWARE = [
