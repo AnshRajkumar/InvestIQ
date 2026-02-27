@@ -113,12 +113,21 @@ def google_login_view(request):
     credential = serializer.validated_data['credential']
     google_client_id = settings.GOOGLE_OAUTH_CLIENT_ID
     
-    if not google_client_id:
-        logger.error("GOOGLE_OAUTH_CLIENT_ID not configured in settings")
-        return Response(
-            {'error': 'Google OAuth not configured'},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+    # Allow development mode without real Google OAuth setup
+    if not google_client_id or google_client_id == 'development-client-id-placeholder':
+        if settings.DEBUG:
+            # Development mode: Skip verification, use demo credentials
+            logger.warning("Google OAuth not configured - using development mode")
+            return Response(
+                {'error': 'Google OAuth not configured. Please use regular login or configure Google OAuth credentials.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        else:
+            logger.error("GOOGLE_OAUTH_CLIENT_ID not configured in production")
+            return Response(
+                {'error': 'Google OAuth not configured'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     try:
         # Verify the Google token

@@ -203,7 +203,8 @@ RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
 
 # OAuth Configuration
-GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', '')
+# Set a development default or use environment variable
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', 'development-client-id-placeholder')
 
 # Demo login (dev only)
 DEMO_USER_EMAIL = os.environ.get('DEMO_USER_EMAIL', 'admin@example.com')
