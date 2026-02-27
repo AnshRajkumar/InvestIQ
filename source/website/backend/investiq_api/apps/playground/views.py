@@ -311,49 +311,77 @@ def create_paper_trading_session(request):
         features = ['SMA_50', 'SMA_200', 'RSI', 'MACD']
         df = df.dropna()
         
+        logger.info(f"📊 Starting paper trading for {ticker} with {len(df)} data points")
+        
         capital = float(initial_capital)
-        position = 0
+        position = 0.0
         trades = []
+        predictions_log = {'UP': 0, 'DOWN': 0}
+        rsi_stats = {'min': 100, 'max': 0, 'oversold': 0, 'overbought': 0}
         
         for i in range(len(df) - 1):
             row = df.iloc[i]
-            current_price = row["Close"]
+            current_price = float(row["Close"])
             
             try:
                 X = row[features].values.reshape(1, -1)
-            except KeyError:
+            except KeyError as e:
+                logger.warning(f"Missing feature {e}, skipping row")
                 continue
             
             prediction = ML_MODEL.predict(X)[0]
+            predictions_log['UP' if prediction == 1 else 'DOWN'] += 1
             
-            # BUY signal
-            if prediction == 1 and position == 0:
-                shares_bought = capital / current_price
-                position = shares_bought
+            # Get RSI for additional signal
+            rsi = float(row['RSI'])
+            rsi_stats['min'] = min(rsi_stats['min'], rsi)
+            rsi_stats['max'] = max(rsi_stats['max'], rsi)
+            if rsi < 30:
+                rsi_stats['oversold'] += 1
+            if rsi > 70:
+                rsi_stats['overbought'] += 1
+            
+            # BUY signal: Model predicts UP OR RSI indicates oversold
+            if (prediction == 1 or rsi < 30) and position == 0:
+                shares_to_buy = capital / current_price
+                position = shares_to_buy
                 capital = 0
                 trades.append({
                     'type': 'BUY',
-                    'price': float(current_price),
-                    'shares': float(shares_bought),
-                    'date': str(row.name.date())
+                    'price': current_price,
+                    'shares': shares_to_buy,
+                    'date': str(row.name.date()) if hasattr(row.name, 'date') else str(row.name),
+                    'signal': 'ML' if prediction == 1 else 'RSI'
                 })
+                logger.debug(f"BUY: {shares_to_buy:.2f} shares at ${current_price:.2f} (RSI: {rsi:.1f})")
             
-            # SELL signal
-            elif prediction == 0 and position > 0:
+            # SELL signal: Model predicts DOWN OR RSI indicates overbought OR take profit
+            elif (prediction == 0 or rsi > 70 or (current_price / (capital + position * current_price) * float(initial_capital)) > 1.05) and position > 0:
+                shares_to_sell = position
                 capital = position * current_price
                 position = 0
                 trades.append({
                     'type': 'SELL',
-                    'price': float(current_price),
-                    'shares': float(position),
-                    'date': str(row.name.date())
+                    'price': current_price,
+                    'shares': shares_to_sell,
+                    'date': str(row.name.date()) if hasattr(row.name, 'date') else str(row.name),
+                    'signal': 'ML' if prediction == 0 else 'RSI/TP'
                 })
+                logger.debug(f"SELL: {shares_to_sell:.2f} shares at ${current_price:.2f} (RSI: {rsi:.1f})")
+        
+        logger.info(f"📈 Predictions: UP={predictions_log['UP']}, DOWN={predictions_log['DOWN']}")
+        logger.info(f"📊 RSI Stats: Min={rsi_stats['min']:.1f}, Max={rsi_stats['max']:.1f}, Oversold(<30)={rsi_stats['oversold']}, Overbought(>70)={rsi_stats['overbought']}")
         
         # Calculate results
         final_price = float(df.iloc[-1]["Close"])
         final_value = Decimal(str(capital + (position * final_price)))
         profit_loss = final_value - initial_capital
         return_pct = float((profit_loss / initial_capital) * 100) if initial_capital > 0 else 0.0
+        
+        logger.info(f"✅ Paper trading completed for {ticker}:")
+        logger.info(f"   Total trades: {len(trades)}")
+        logger.info(f"   Initial: ${initial_capital}, Final: ${final_value}")
+        logger.info(f"   P&L: ${profit_loss} ({return_pct:.2f}%)")
         
         # Create session
         session = PaperTradingSession.objects.create(

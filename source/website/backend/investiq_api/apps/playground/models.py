@@ -15,7 +15,7 @@ class PredictionGame(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='prediction_games')
     ticker = models.CharField(max_length=10)
     user_prediction = models.CharField(max_length=10, choices=PREDICTION_CHOICES)
-    ai_prediction = models.CharField(max_length=10, choices=PREDICTION_CHOICES)
+    ai_prediction = models.CharField(max_length=10, choices=PREDICTION_CHOICES) 
     ai_confidence = models.FloatField()  # Confidence percentage
     actual_result = models.CharField(max_length=10, choices=PREDICTION_CHOICES, null=True, blank=True)
     user_correct = models.BooleanField(null=True, blank=True)

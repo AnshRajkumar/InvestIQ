@@ -117,7 +117,7 @@ const PlaygroundPage = () => {
     setTradingResult(null);
     
     try {
-      const response = await api.post('/playground/paper-trading/', {
+      const response = await api.post('/playground/paper-trading/create/', {
         ticker: tradingTicker.toUpperCase(),
         initial_capital: parseFloat(initialCapital)
       });
@@ -149,7 +149,7 @@ const PlaygroundPage = () => {
   const safeInitialCapital = tradingResult?.initial_capital ?? initialCapital ?? 0;
   const safeFinalValue = tradingResult?.final_value ?? tradingResult?.initial_capital ?? initialCapital ?? 0;
   const safeProfitLoss = tradingResult?.profit_loss ?? 0;
-  const safeReturnPercent = tradingResult?.return_percent ?? 0;
+  const safeReturnPercent = tradingResult?.return_percentage ?? 0;
 
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
@@ -663,7 +663,7 @@ const PlaygroundPage = () => {
                         Initial Capital
                       </p>
                       <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        ₹{parseFloat(safeInitialCapital).toLocaleString()}
+                        ${parseFloat(safeInitialCapital).toLocaleString()}
                       </p>
                     </div>
                     
@@ -672,7 +672,7 @@ const PlaygroundPage = () => {
                         Final Value
                       </p>
                       <p className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                        ₹{parseFloat(safeFinalValue).toLocaleString()}
+                        ${parseFloat(safeFinalValue).toLocaleString()}
                       </p>
                     </div>
                     
@@ -689,7 +689,7 @@ const PlaygroundPage = () => {
                           ? 'text-green-500'
                           : 'text-red-500'
                       }`}>
-                        ₹{parseFloat(safeProfitLoss).toLocaleString()}
+                        ${parseFloat(safeProfitLoss).toFixed(2)}
                       </p>
                     </div>
                     
@@ -744,12 +744,15 @@ const PlaygroundPage = () => {
                               </div>
                               <div>
                                 <p className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                                  {trade.quantity} @ ₹{trade.price.toFixed(2)}
+                                  {parseFloat(trade.shares).toFixed(2)} shares @ ${parseFloat(trade.price).toFixed(2)}
+                                </p>
+                                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                  {trade.date} • {trade.signal || 'ML'}
                                 </p>
                               </div>
                             </div>
                             <p className={`text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                              ₹{trade.total.toLocaleString()}
+                              ${(parseFloat(trade.shares) * parseFloat(trade.price)).toFixed(2)}
                             </p>
                           </div>
                         ))}

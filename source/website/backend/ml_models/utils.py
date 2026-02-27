@@ -62,16 +62,37 @@ def generate_mock_data(ticker, days=504):
     np.random.seed(hash(ticker) % 2**32)
     dates = pd.date_range(end=pd.Timestamp.now(), periods=days, freq='D')
     
-    # Generate realistic price movement
+    # Generate realistic price movement with EXTREME trends for RSI signals
     base_price = 100.0
-    returns = np.random.normal(0.0005, 0.02, days)
-    prices = base_price * np.exp(np.cumsum(returns))
+    prices = [base_price]
+    
+    # Create dramatic price movements to trigger RSI extremes
+    for i in range(1, days):
+        # Every 30 days, start a strong trend
+        if i % 30 == 0:
+            trend = np.random.choice([0.03, -0.03, 0.02, -0.02])  # 2-3% daily trend
+        elif i % 10 == 0:
+            trend = np.random.choice([0.015, -0.015, 0.01, -0.01])
+        else:
+            trend = 0
+        
+        # Higher base volatility
+        daily_return = np.random.normal(trend, 0.035)
+        
+        # 15% chance of extreme move
+        if np.random.random() < 0.15:
+            daily_return += np.random.choice([0.06, -0.06, 0.04, -0.04])
+        
+        new_price = prices[-1] * (1 + daily_return)
+        prices.append(max(new_price, 1))
+    
+    prices = np.array(prices)
     
     df = pd.DataFrame({
         'Close': prices,
-        'Open': prices * (1 + np.random.normal(0, 0.005, days)),
-        'High': prices * (1 + np.abs(np.random.normal(0, 0.01, days))),
-        'Low': prices * (1 - np.abs(np.random.normal(0, 0.01, days))),
+        'Open': prices * (1 + np.random.normal(0, 0.015, days)),
+        'High': prices * (1 + np.abs(np.random.normal(0, 0.025, days))),
+        'Low': prices * (1 - np.abs(np.random.normal(0, 0.025, days))),
         'Volume': np.random.randint(1000000, 10000000, days)
     }, index=dates)
     
