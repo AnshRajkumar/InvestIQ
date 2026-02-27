@@ -6,7 +6,6 @@ Production-ready configuration with environment variable support.
 import os
 from pathlib import Path
 from datetime import timedelta
-from decouple import config
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -14,12 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BASE_DIR.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here-change-in-production')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-here-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -84,26 +83,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'investiq_api.wsgi.application'
 
 # Database
-# Use DATABASE_URL if available (Railway/Render), otherwise fall back to individual settings
-if config('DATABASE_URL', default=''):
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=config('DATABASE_URL'),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': config('DATABASE_ENGINE', default='django.db.backends.sqlite3'),
-            'NAME': config('DATABASE_NAME', default=BASE_DIR / 'db.sqlite3'),
-            'USER': config('DATABASE_USER', default=''),
-            'PASSWORD': config('DATABASE_PASSWORD', default=''),
-            'HOST': config('DATABASE_HOST', default=''),
-            'PORT': config('DATABASE_PORT', default=''),
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+    )
+}
 
 # Custom user model
 AUTH_USER_MODEL = 'authentication.User'
@@ -160,13 +144,13 @@ REST_FRAMEWORK = {
 
 # JWT Configuration
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=config('JWT_ACCESS_TOKEN_EXPIRE_MINUTES', default=60, cast=int)),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=config('JWT_REFRESH_TOKEN_EXPIRE_DAYS', default=7, cast=int)),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRE_MINUTES', '60'))),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.environ.get('JWT_REFRESH_TOKEN_EXPIRE_DAYS', '7'))),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': False,
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': config('JWT_SECRET_KEY', default=SECRET_KEY),
+    'SIGNING_KEY': os.environ.get('JWT_SECRET_KEY', SECRET_KEY),
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
@@ -179,9 +163,9 @@ SIMPLE_JWT = {
 }
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = config(
+CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:5173,http://localhost:5174,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174'
+    'http://localhost:5173,http://localhost:5174,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:5174'
 ).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
@@ -208,21 +192,21 @@ if not DEBUG:
     }
 
 # AI API Configuration
-OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
-GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
-AI_PROVIDER = config('AI_PROVIDER', default='openai')
-USE_MOCK_DATA = config('USE_MOCK_DATA', default=True, cast=bool)
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+AI_PROVIDER = os.environ.get('AI_PROVIDER', 'openai')
+USE_MOCK_DATA = os.environ.get('USE_MOCK_DATA', 'True') == 'True'
 
 # Razorpay Configuration
-RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='')
-RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
 
 # OAuth Configuration
-GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_OAUTH_CLIENT_ID', default='')
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', '')
 
 # Demo login (dev only)
-DEMO_USER_EMAIL = config('DEMO_USER_EMAIL', default='admin@example.com')
-DEMO_USER_PASSWORD = config('DEMO_USER_PASSWORD', default='admin123')
+DEMO_USER_EMAIL = os.environ.get('DEMO_USER_EMAIL', 'admin@example.com')
+DEMO_USER_PASSWORD = os.environ.get('DEMO_USER_PASSWORD', 'admin123')
 
 # Logging Configuration
 LOGGING = {

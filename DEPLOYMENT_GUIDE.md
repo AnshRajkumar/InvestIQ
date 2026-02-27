@@ -132,20 +132,24 @@ Replace `your-backend.railway.app` with your actual Railway URL from Part 1, Ste
 ## 🔥 Quick Fixes for Common Issues
 
 ### Backend won't start?
+
 - Check Railway logs for errors
 - Verify `DATABASE_URL` is set automatically by PostgreSQL
 - Ensure `ALLOWED_HOSTS` includes `.railway.app`
 
 ### Frontend can't connect to backend?
+
 - Verify `VITE_API_URL` is set correctly in Vercel
 - Check CORS settings in Railway include your Vercel URL
 - Look at browser console for CORS errors
 
 ### Database errors?
+
 - Migrations should run automatically via Procfile
 - If not, use Railway CLI: `railway run python manage.py migrate`
 
 ### Static files not loading?
+
 - Verify `collectstatic` ran during build
 - Check WhiteNoise is configured (it is in your settings.py)
 
@@ -167,11 +171,13 @@ Replace `your-backend.railway.app` with your actual Railway URL from Part 1, Ste
 ## 📱 Optional: Custom Domain
 
 ### For Vercel (Frontend):
+
 1. Go to Project Settings → Domains
 2. Add your custom domain
 3. Follow DNS instructions
 
 ### For Railway (Backend):
+
 1. Go to Service Settings → Domains
 2. Add custom domain
 3. Update DNS records
@@ -191,11 +197,13 @@ Replace `your-backend.railway.app` with your actual Railway URL from Part 1, Ste
 You can also create deploy buttons:
 
 **Backend Railway Button**:
+
 ```
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/django)
 ```
 
 **Frontend Vercel Button**:
+
 ```
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=your-repo-url)
 ```
@@ -225,5 +233,6 @@ You can also create deploy buttons:
 **Your deployment should be live now! 🚀**
 
 Share your links:
+
 - Frontend: `https://your-app.vercel.app`
 - Backend API: `https://your-backend.railway.app/api`

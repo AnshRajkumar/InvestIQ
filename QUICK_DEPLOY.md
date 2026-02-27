@@ -3,6 +3,7 @@
 ## Before Deploying
 
 1. **Push your code to GitHub**
+
    ```bash
    git add .
    git commit -m "Prepare for deployment"
@@ -55,14 +56,17 @@
 ## Troubleshooting
 
 **Can't connect?**
+
 - Check browser console for CORS errors
 - Verify VITE_API_URL in Vercel matches Railway domain
 - Check Railway logs for backend errors
 
 **Database issues?**
+
 - Migrations run automatically via Procfile
 - Check Railway logs for migration errors
 
 **Need demo user?**
+
 - Use Railway CLI: `railway run python manage.py createsuperuser`
 - Or mark existing user as premium via Django admin
