@@ -223,7 +223,7 @@ def profile_me_view(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def profile_by_id_view(request, user_id):
     """Return a user's public profile by id."""
     try:

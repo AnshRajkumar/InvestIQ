@@ -1,7 +1,11 @@
 from datetime import timedelta
 import uuid
 
-import razorpay
+try:
+    import razorpay
+except (ImportError, ModuleNotFoundError):
+    razorpay = None
+
 from django.conf import settings
 from django.utils import timezone
 from rest_framework import permissions, status
@@ -26,8 +30,8 @@ class CreateOrderView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Mock order if Razorpay keys not configured
-        if not key_id or not key_secret:
+        # Mock order if Razorpay keys not configured or library not available
+        if not key_id or not key_secret or razorpay is None:
             mock_order_id = f'order_{uuid.uuid4().hex[:12]}'
             payment_order = PaymentOrder.objects.create(
                 user=request.user,

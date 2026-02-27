@@ -31,7 +31,7 @@ else
     
     # Run migrations
     echo "Running migrations..."
-    python manage.py migrate --quiet
+    python manage.py migrate
     
     # Start server in background
     python manage.py runserver 0.0.0.0:8000 > /tmp/backend.log 2>&1 &
