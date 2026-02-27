@@ -15,6 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'profile_picture',
             'is_email_verified',
+            'is_premium',
             'created_at',
         ]
         read_only_fields = ['id', 'created_at']
@@ -67,3 +68,45 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'profile_picture']
+
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    """Serialize public user profile with activity counts."""
+    total_posts = serializers.SerializerMethodField()
+    total_likes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'profile_picture',
+            'is_email_verified',
+            'is_premium',
+            'created_at',
+            'total_posts',
+            'total_likes'
+        ]
+
+    def get_total_posts(self, obj):
+        from investiq_api.apps.community.models import CommunityPost
+        return CommunityPost.objects.filter(author=obj).count()
+
+    def get_total_likes(self, obj):
+        from investiq_api.apps.community.models import PostLike
+        return PostLike.objects.filter(post__author=obj).count()
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """Serialize password change request."""
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, min_length=8)
+    confirm_password = serializers.CharField(write_only=True, min_length=8)
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError({'new_password': 'Passwords do not match.'})
+        if data['old_password'] == data['new_password']:
+            raise serializers.ValidationError({'new_password': 'New password must be different from old password.'})
+        return data

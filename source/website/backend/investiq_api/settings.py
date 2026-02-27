@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'investiq_api.apps.portfolio',
     'investiq_api.apps.advisor',
     'investiq_api.apps.playground',
+    'investiq_api.apps.payments',
+    'investiq_api.apps.community',
+    'investiq_api.apps.direct_messages',
+    'investiq_api.apps.comments',
 ]
 
 MIDDLEWARE = [
@@ -197,6 +201,10 @@ OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 AI_PROVIDER = config('AI_PROVIDER', default='openai')
 USE_MOCK_DATA = config('USE_MOCK_DATA', default=True, cast=bool)
+
+# Razorpay Configuration
+RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
 
 # OAuth Configuration
 GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_OAUTH_CLIENT_ID', default='')

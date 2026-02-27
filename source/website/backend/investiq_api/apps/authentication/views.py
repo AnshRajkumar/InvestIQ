@@ -15,6 +15,8 @@ from .serializers import (
     LoginSerializer,
     GoogleLoginSerializer,
     ProfileUpdateSerializer,
+    PublicProfileSerializer,
+    ChangePasswordSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -211,6 +213,19 @@ def profile_me_view(request):
     return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_by_id_view(request, user_id):
+    """Return a user's public profile by id."""
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = PublicProfileSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def update_profile_view(request):
@@ -231,3 +246,30 @@ def update_profile_view(request):
 def logout_view(request):
     """Client-side token removal handles logout."""
     return Response({'message': 'Logged out'}, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password_view(request):
+    """Change user password."""
+    serializer = ChangePasswordSerializer(data=request.data)
+    if serializer.is_valid():
+        user = request.user
+        old_password = serializer.validated_data['old_password']
+        new_password = serializer.validated_data['new_password']
+
+        # Check if old password is correct
+        if not user.check_password(old_password):
+            return Response(
+                {'error': 'Old password is incorrect.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Set new password
+        user.set_password(new_password)
+        user.save()
+
+        return Response(
+            {'message': 'Password changed successfully'},
+            status=status.HTTP_200_OK
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

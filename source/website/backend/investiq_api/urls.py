@@ -32,6 +32,10 @@ urlpatterns = [
     path('api/portfolio/', include('investiq_api.apps.portfolio.urls')),
     path('api/advisor/', include('investiq_api.apps.advisor.urls')),
     path('api/playground/', include('investiq_api.apps.playground.urls')),
+    path('api/payments/', include('investiq_api.apps.payments.urls')),
+    path('api/community/', include('investiq_api.apps.community.urls')),
+    path('api/direct-messages/', include('investiq_api.apps.direct_messages.urls')),
+    path('api/comments/', include('investiq_api.apps.comments.urls')),
 ]
 
 # Serve media files in development

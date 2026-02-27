@@ -94,6 +94,31 @@ export default function Navbar() {
                   News
                 </NavLink>
                 <NavLink
+                  to="/community"
+                  className={({ isActive }) => `px-2 py-1 rounded-md transition ${
+                    isActive
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  Community
+                </NavLink>
+                <NavLink
+                  to="/personal-chat"
+                  className={({ isActive }) => `px-2 py-1 rounded-md transition flex items-center gap-1 ${
+                    isActive
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <span>Personal Chat</span>
+                  <span title="Premium" className="inline-flex">
+                    <svg className="w-4 h-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M5 16l-3-9 6 4 4-6 4 6 6-4-3 9H5zm1.5 4a1.5 1.5 0 010-3h11a1.5 1.5 0 010 3h-11z" />
+                    </svg>
+                  </span>
+                </NavLink>
+                <NavLink
                   to="/predictions"
                   className={({ isActive }) => `px-2 py-1 rounded-md transition ${
                     isActive

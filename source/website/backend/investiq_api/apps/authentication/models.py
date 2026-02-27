@@ -8,6 +8,9 @@ class User(AbstractUser):
     google_id = models.CharField(max_length=500, blank=True, null=True, unique=True)
     is_email_verified = models.BooleanField(default=False)
     profile_picture = models.URLField(blank=True, null=True)
+    is_premium = models.BooleanField(default=False)
+    premium_since = models.DateTimeField(blank=True, null=True)
+    premium_until = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

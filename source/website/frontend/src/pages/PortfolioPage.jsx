@@ -19,12 +19,9 @@ export default function PortfolioPage() {
 
   const fetchPortfolioData = async () => {
     try {
-      const [portfolioRes, holdingsRes] = await Promise.all([
-        api.get('/portfolio/overview/'),
-        api.get('/portfolio/holdings/'),
-      ])
-      setPortfolio(portfolioRes.data)
-      setHoldings(holdingsRes.data.results || [])
+      const response = await api.get('/portfolio/overview/')
+      setPortfolio(response.data)
+      setHoldings(response.data.holdings || [])
     } catch (error) {
       console.error('Error fetching portfolio:', error)
     } finally {
@@ -66,9 +63,15 @@ export default function PortfolioPage() {
           {/* Portfolio Summary */}
           {portfolio && (
             <div className="grid grid-cols-3 gap-6 mb-8">
-              <SummaryCard title="Total Value" value={`$${portfolio.total_value.toFixed(2)}`} icon="💰" darkMode={darkMode} />
-              <SummaryCard title="Cash Available" value={`$${portfolio.cash_available.toFixed(2)}`} icon="💵" darkMode={darkMode} />
-              <SummaryCard title="Risk Score" value={portfolio.risk_score.toFixed(1)} icon="⚠️" darkMode={darkMode} />
+              <SummaryCard title="Total Value" value={`$${parseFloat(portfolio.total_value).toFixed(2)}`} icon="💰" darkMode={darkMode} />
+              <SummaryCard title="Total Invested" value={`$${parseFloat(portfolio.total_invested).toFixed(2)}`} icon="💵" darkMode={darkMode} />
+              <SummaryCard 
+                title="Profit/Loss" 
+                value={`$${parseFloat(portfolio.total_profit_loss).toFixed(2)}`} 
+                icon={parseFloat(portfolio.total_profit_loss) >= 0 ? "📈" : "📉"} 
+                darkMode={darkMode} 
+                isProfit={parseFloat(portfolio.total_profit_loss) >= 0}
+              />
             </div>
           )}
 
@@ -140,18 +143,25 @@ export default function PortfolioPage() {
                 <div key={holding.id} className={`rounded-lg shadow p-6 ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'}`}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>{holding.stock_symbol}</h3>
+                      <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                        {holding.symbol} - {holding.company_name}
+                      </h3>
                       <div className={`mt-2 space-y-1 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        <p>Quantity: {holding.quantity} shares</p>
-                        <p>Purchase Price: ${holding.purchase_price}</p>
-                        <p>Current Price: ${holding.current_price}</p>
-                        <p>P/L: <span className={holding.profit_loss >= 0 ? (darkMode ? 'text-green-400' : 'text-green-600') : (darkMode ? 'text-red-400' : 'text-red-600')}>
-                          ${holding.profit_loss.toFixed(2)}
+                        <p>Shares: {parseFloat(holding.shares).toFixed(4)}</p>
+                        <p>Average Buy Price: ${parseFloat(holding.average_buy_price).toFixed(2)}</p>
+                        <p>Current Price: ${parseFloat(holding.current_price).toFixed(2)}</p>
+                        <p>Total Invested: ${parseFloat(holding.total_invested).toFixed(2)}</p>
+                        <p>Current Value: ${parseFloat(holding.current_value).toFixed(2)}</p>
+                        <p>P/L: <span className={parseFloat(holding.profit_loss) >= 0 ? (darkMode ? 'text-green-400' : 'text-green-600') : (darkMode ? 'text-red-400' : 'text-red-600')}>
+                          ${parseFloat(holding.profit_loss).toFixed(2)} ({parseFloat(holding.profit_loss_percent).toFixed(2)}%)
                         </span></p>
+                        <p className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                          Sector: {holding.sector}
+                        </p>
                       </div>
                     </div>
                     <button
-                      onClick={() => handleRemoveHolding(holding.stock_symbol)}
+                      onClick={() => handleRemoveHolding(holding.symbol)}
                       className={`text-white px-4 py-2 rounded-lg ${
                         darkMode
                           ? 'bg-red-700 hover:bg-red-600'
@@ -170,13 +180,19 @@ export default function PortfolioPage() {
   )
 }
 
-function SummaryCard({ title, value, icon, darkMode }) {
+function SummaryCard({ title, value, icon, darkMode, isProfit = null }) {
   return (
     <div className={`rounded-lg shadow p-6 ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white'}`}>
       <div className="flex items-center justify-between">
         <div>
           <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{title}</p>
-          <p className={`text-2xl font-bold mt-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{value}</p>
+          <p className={`text-2xl font-bold mt-2 ${
+            isProfit !== null 
+              ? isProfit 
+                ? (darkMode ? 'text-green-400' : 'text-green-600')
+                : (darkMode ? 'text-red-400' : 'text-red-600')
+              : darkMode ? 'text-white' : 'text-gray-900'
+          }`}>{value}</p>
         </div>
         <span className="text-4xl">{icon}</span>
       </div>

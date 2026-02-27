@@ -14,6 +14,9 @@ import AdvisorPage from './pages/AdvisorPage'
 import PlaygroundPage from './pages/PlaygroundPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
+import CommunityPage from './pages/CommunityPage'
+import CommunityProfilePage from './pages/CommunityProfilePage'
+import PersonalChatPage from './pages/PersonalChatPage'
 import './index.css'
 
 function PrivateRoute({ children }) {
@@ -167,6 +170,33 @@ function AppRoutes() {
           <PrivateRoute>
             <Navbar />
             <SettingsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/community"
+        element={
+          <PrivateRoute>
+            <Navbar />
+            <CommunityPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/personal-chat"
+        element={
+          <PrivateRoute>
+            <Navbar />
+            <PersonalChatPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/community/user/:userId"
+        element={
+          <PrivateRoute>
+            <Navbar />
+            <CommunityProfilePage />
           </PrivateRoute>
         }
       />
