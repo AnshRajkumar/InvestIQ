@@ -22,12 +22,23 @@
 1. Go to https://railway.app → New Project
 2. Deploy from GitHub → Select your repo
 3. Add PostgreSQL database (click + New → PostgreSQL)
-4. Add environment variables:
-   - `SECRET_KEY` (from generate_secret_key.py)
-   - `DEBUG=False`
-   - `ALLOWED_HOSTS=.railway.app,.vercel.app`
-   - `CORS_ALLOWED_ORIGINS=https://your-frontend.vercel.app` (update after frontend deploy)
-5. Generate domain → Copy URL
+   - Railway automatically sets DATABASE_URL environment variable
+4. Add REQUIRED environment variables to your backend service:
+   ```
+   SECRET_KEY=your-generated-secret-key-from-python-script
+   DEBUG=False
+   ALLOWED_HOSTS=.railway.app,.vercel.app
+   CORS_ALLOWED_ORIGINS=https://your-frontend.vercel.app
+   ```
+   **Note**: Update CORS_ALLOWED_ORIGINS after you deploy frontend in step 2
+5. Optional environment variables (for full features):
+   ```
+   OPENAI_API_KEY=sk-your-openai-key
+   RAZORPAY_KEY_ID=your-razorpay-id
+   RAZORPAY_KEY_SECRET=your-razorpay-secret
+   ```
+6. Generate domain → Copy URL
+7. Wait for deployment
 
 ## Deploy Frontend (3 minutes)
 
